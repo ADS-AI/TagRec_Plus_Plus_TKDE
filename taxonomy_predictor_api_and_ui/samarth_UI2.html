@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>TAXONOMY PREDICTOR</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+  <!-- Favicons -->
+  <link href="{{url_for('static',filename='assets/img/favicon.png')}}" rel="icon">
+  <link href="{{url_for('static',filename='assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static',filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/icofont/icofont.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/owl.carousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/animate.css/animate.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename='assets/vendor/aos/aos.css')}}" rel="stylesheet">
+  <!-- Template Main CSS File -->
+  <link href="{{url_for('static',filename='assets/css/style.css')}}" rel="stylesheet">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <!-- =======================================================
+         * Template Name: Mentor - v2.1.0
+         * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
+         * Author: BootstrapMade.com
+         * License: https://bootstrapmade.com/license/
+         ======================================================== -->
+  <script type="text/javascript">
+    $(document).on("click", "#btn-1", function () {
+      var file_data = $("#inpfile").prop("files")[0];
+      var form_data = new FormData(); // Creating 
+      form_data.append("file", file_data) // Appending
+      console.log("form_data", form_data)
+      if (file_data) {
+        var b1 = document.getElementById('btn-1');
+        b1.style.display = 'none';
+        var b2 = document.getElementById('btn-2');
+        b2.style.display = 'block';
+
+        $.ajax({
+          url: "http://localhost:8000/gettaxonomy/batch", // Upload Script
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: form_data, // Setting the data attribute 
+          type: 'post',
+          success: function (data) {
+
+            var b1 = document.getElementById('btn-2');
+            b1.style.display = 'none';
+            var b2 = document.getElementById('btn-1');
+            b2.style.display = 'block';
+
+            var blob = new Blob([data]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "converted.csv";
+            link.click();
+
+          }
+        });
+      }
+      else {
+        return;
+      }
+
+    });
+    function readInput() {
+      var input = ""
+      var answer = ""
+
+      var element1 = document.getElementById('o_ques');
+      var element2 = document.getElementById('o_ans');
+
+      var b1 = document.getElementById('b1');
+      b1.style.display = 'none';
+      var b2 = document.getElementById('b2');
+      b2.style.display = 'block';
+
+      var out1 = document.getElementById('out1');
+      out1.style.display = 'none';
+      var conf1 = document.getElementById('conf1');
+      conf1.style.display = 'none';
+
+      var out2 = document.getElementById('out2');
+      out2.style.display = 'none';
+      var conf2 = document.getElementById('conf2');
+      conf2.style.display = 'none';
+
+      var out3 = document.getElementById('out3');
+      out3.style.display = 'none';
+      var conf3 = document.getElementById('conf3');
+      conf3.style.display = 'none';
+
+      if (element1.value != "") {
+
+        input1 = element1.value;     //Desired Input1
+        //input2 = element2.value  ;     //Desired Input2
+        var dict = {};
+        content = input1//+' '+input2   
+        dict['content'] = content;
+        $.ajax({
+          type: "post",
+          url: 'http://localhost:8000/gettaxonomy',
+          data: JSON.stringify(dict),
+          traditional: true,
+          contentType: 'application/json;charset=UTF-8',
+          success: function (data) {
+            console.log("json response", data[0]);
+
+            var b1 = document.getElementById('b1');
+            b1.style.display = 'block';
+            var b2 = document.getElementById('b2');
+            b2.style.display = 'none';
+
+            var out1 = document.getElementById('out1');
+            out1.style.display = 'block';
+            out1.value = " #1: " + data[0].taxonomy;
+            var conf1 = document.getElementById('conf1');
+            conf1.value = "Confidence #1: " + data[0].confidence;
+            conf1.style.display = 'block';
+            var out2 = document.getElementById('out2');
+            out2.style.display = 'block';
+            out2.value = " #2: " + data[1].taxonomy;
+            var conf2 = document.getElementById('conf2');
+            conf2.value = "Confidence #1: " + data[1].confidence;
+            conf2.style.display = 'block';
+            var out3 = document.getElementById('out3');
+            out3.style.display = 'block';
+            out3.value = " #3: " + data[2].taxonomy;
+            var conf1 = document.getElementById('conf1');
+            conf3.value = "Confidence #3: " + data[2].confidence;
+            conf3.style.display = 'block';
+
+
+
+            return;
+          }
+        });
+      }
+
+      else {
+
+        var b1 = document.getElementById('b1');
+        b1.style.display = 'block';
+        var b2 = document.getElementById('b2');
+        b2.style.display = 'none';
+      }
+    }
+
+
+    $("select").on("click", function () {
+
+      $(this).parent(".select-box").toggleClass("open");
+
+    });
+
+    $(document).mouseup(function (e) {
+      var container = $(".select-box");
+
+      if (container.has(e.target).length === 0) {
+        container.removeClass("open");
+      }
+    });
+
+
+    $("select").on("change", function () {
+
+      var selection = $(this).find("option:selected").text(),
+        labelFor = $(this).attr("id"),
+        label = $("[for='" + labelFor + "']");
+
+      label.find(".label-desc").html(selection);
+
+    });
+
+  </script>
+
+
+
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro);
+
+    .body {
+      min-width: 2000px;
+      /* Suppose you want minimum width of 1000px */
+      width: auto !important;
+      /* Firefox will set width as auto */
+      width: 1000px;
+      /* As IE6 ignores !important it will set width as 1000px; */
+    }
+
+    .select-box {
+      cursor: pointer;
+      position: relative;
+      max-width: 20em;
+      margin: 5em auto;
+      width: 300px;
+    }
+
+    .form-class {
+      margin-left: 40%;
+      margin-top: 5%;
+    }
+
+    .select,
+    .label {
+      color: #414141;
+      display: block;
+      font: 400 17px/2em 'Source Sans Pro', sans-serif;
+    }
+
+    .select {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      padding: 5px 0;
+      height: 40px;
+      opacity: 0;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      background: none transparent;
+      border: 0 none;
+    }
+
+    .select-box1 {
+      background: #4bc979;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      /*padding: 8px 20px;*/
+    }
+
+    .label {
+      position: relative;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .open .label::after {
+      content: "▲";
+    }
+
+    .label::after {
+      content: "▼";
+      font-size: 12px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 5px 15px;
+      border-left: 5px solid #fff;
+    }
+
+    .file {
+      visibility: hidden;
+      position: absolute;
+    }
+
+    .input-icons {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .input-container {
+      display: flex;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .input {
+      /*background-color:#5fcf80;*/
+    }
+
+    .upload-btn-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    .btn1 {
+      color: white;
+      background-color: #4bc979;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .btn2 {
+      color: white;
+      background-color: #4bc979;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .upload-btn-wrapper input[type=file] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+    }
+
+    .buttonload {
+      background-color: #4CAF50;
+      /* Green background */
+      border: none;
+      /* Remove borders */
+      color: white;
+      /* White text */
+      padding: 12px 24px;
+      /* Some padding */
+      font-size: 16px;
+      /* Set a font-size */
+    }
+  </style>
+
+</head>
+
+<body background="1.jpg">
+  <br />
+  <h1 align="center">
+    <font face="Lato" color="#0175bf5" size="8">
+      <!-- TagRec: The Automated Questions-Learning Taxonomy Predictor -->
+      Project 6&7
+    </font>
+  </h1>
+  <h2 align="center">
+    <font face="Lato" color="#0175bf5" size="8">
+      <!-- TagRec: The Automated Questions-Learning Taxonomy Predictor -->
+      TAGREC: The Question, Content, Syllabus Hierarchy Tagger
+    </font>
+  </h2>
+  <br />
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+
+      <!-- <h2  -->
+
+      <!-- class="logo mr-auto"><a href="{{ url_for('home') }}">
+               TAGREC -->
+
+      <!-- <h1 style = "font-size:50px ;color: black;display: inline-flex;"></h1></a></h1> -->
+      <nav class="nav-menu d-none d-lg-block">
+        <!-- <ul>
+                 <li>
+                   <a href="{{ url_for('home') }}">
+                   Home
+                   </a>
+                 </li>
+              </ul> -->
+      </nav>
+      <!-- .nav-menu -->
+      <!-- <a href="{{ url_for('convert') }}" class="get-started-btn">Get Started</a> -->
+    </div>
+  </header>
+  <!-- End Header -->
+
+  <main id="main" data-aos="fade-in">
+    <!-- ======= Breadcrumbs ======= -->
+    <div style="height: 100%">
+      <div class="breadcrumbs">
+        <!-- <div class="container">
+                <h1 align ="left">
+                    <font face ="Lato" color ="017bf5" size="5">
+                        Would you like to upload a file or enter the question?
+                    </font>
+    
+                </h1>
+               <!-- <h2 style = "margin-top: 15px">Taxonomy Predictor</h2> -->
+        <!-- <ul>
+
+                  <li> Upload a .csv file containing Objective Questions and their corresponding answers.</li>
+                  <li> Note: The .csv file should not contain any headers.</li>
+               </ul> -->
+        <!-- </div> -->
+        <!-- </div> -->
+      </div>
+    </div><!-- End Breadcrumbs -->
+    <!-- <section > -->
+
+    <style>
+      /* Style The Dropdown Button */
+      .dropbtn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: 2px solid black;
+        cursor: pointer;
+      }
+
+      /* The container <div> - needed to position the dropdown content */
+      .dropdown {
+        position: absolute;
+        align-items: center;
+        display: inline-block;
+        background-color: #c218b1;
+        color: rgb(110, 156, 158);
+        padding: 16px;
+        font-size: 16px;
+        width: 310px;
+        height: 27px;
+        border: 2px solid black;
+        cursor: pointer;
+      }
+
+      /* Dropdown Content (Hidden by Default) */
+      .dropdown-content {
+        display: inline-block;
+        background-color: #ebe85c;
+        border: 2px solid black;
+        background-image: url("2.jpg");
+        text-align: center;
+        font-family: 'Geneva';
+        font-weight: bold;
+        
+        font-size: 20px;
+        padding: 10px;
+        color: brown;
+        width: 475px;
+        height: 60px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+
+      /* Links inside the dropdown */
+      .dropdown-content a {
+        color: rgb(240, 255, 75);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #a50b0b
+      }
+
+      /* Show the dropdown menu on hover */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      /* Change the background color of the dropdown button when the dropdown content is shown */
+      .dropdown:hover .dropbtn {
+        background-color: #3e8e41;
+        
+      }
+    </style>
+
+    <div id="dropdown" style="width: 100%; text-align: center;">
+      <!-- style="
+
+                            display: flex;
+                            flex-direction: column;
+                            height: 300%;
+                            background-color: #3e8e41 ; 
+                            padding-top: 50px;
+                            padding-right: 80px;
+                            padding-bottom: 50px;
+                            padding-left: 20%;
+                            /*padding:10% 10% 10% 10%; */
+                            align-content: center ;   " -->
+
+
+      <script type="text/javascript">
+        function changer(value) {
+          console.log("tab : ", value);
+          if (value === 'tab1') {
+            // document.getElementById("tabcontent").innerHTML = ('<div> hello 1</div>');
+            document.getElementById("tabcontent").innerHTML =
+              `<div id="1st" style="
+                            display: flex;
+                            flex-direction: column;
+                            height: 100%;
+                            
+                            padding:0% 10% 10% 10%;
+                            text-align:center;
+                            align-content: center ;">
+                                <!-- <div style="border
+                                -radius: 10px"> -->
+                                
+                                <div style = "display: inline-block; text-align:center;"">
+                                <h2> </h2>
+                                <input type="text" name="o_ques" id="o_ques" placeholder="Type Your Question Here: " style = "height: 90px; width: 40%; text-align:center"/>
+                                
+                                <button type="submit" id = "b1" style = "
+                                    height: 50px;
+                                    width: 50px;  
+                                    font-size: 2em;
+                                    font-weight: bold;
+                                    border-radius: 50%;
+                                    margin-left: 7px;
+                                    background-color: #4bc979;
+                                    color: white;
+                                    text-align: center;
+                                    cursor: pointer; 
+                                    padding-right: 2px"
+                                    onclick='readInput()'; >></button>
+
+                                    <button type="submit"  id = "b2" style = "
+                                    display: none;
+                                    height: 50px;
+                                    width: 50px;  
+                                    font-size: 2em;
+                                    font-weight: bold;
+                                    border-radius: 50%;
+                                    margin-left: 7px;
+                                    background-color: #4bc979;
+                                    color: white;
+                                    text-align: center;
+                                    align-items: center;
+                                    padding-bottom: 10px;
+                                    "> <i class="fa fa-spinner fa-spin"></i></button>
+                                </div>
+                                <div style = ' display: flex; height: 40px; margin-top:30px'>
+                                <input type="text" name="out1" id="out1" placeholder="boom" style = ' display: none ;height: 40px; width:  40%;'/>
+                                <input type="text" name="conf1" id="conf1" placeholder="conf
+                                    " style = 'display: none ;height: 40px; width: 30%'/>
+
+                                </div>
+                                <div style = 'display:flex; '>
+                                <input type="text" name="out2" id="out2" placeholder="boom" style = ' display: none ;height: 40px; width: 40%'/>
+                                <input type="text" name="conf2" id="conf2" placeholder="conf
+                                    " style = 'display: none ;height: 40px; width: 30%;'/>
+                                </div>
+                                <div style = 'display:flex;'>
+                                <input type="text" name="out3" id="out3" placeholder="boom" style = ' display: none ;height: 40px; width: 40%;'/>
+                                <input type="text" name="conf3" id="conf3" placeholder="conf
+                                    " style = 'display: none ;height: 40px; width: 30%;'/>
+                                </div> `;
+
+
+          }
+          else if (value === 'tab2') {
+            document.getElementById("tabcontent").innerHTML =
+              `<div id="2nd" style=" display: flex; flex-direction: column; height: 100%; padding: 0% 10% 10% 10%; align-content: center ;   ">\
+                                        
+                                        <div style = "display: inline-block; text-align:center; height: 40px;">\
+                                          <h3></h3>
+                                            <textarea type="text" name="o_ques" id="o_ques" placeholder="Enter The Content Here:" style = "text-align: center; height: 250px; width: 70%;"/>\
+                                            </textarea>
+                                            <h3></h3>
+                                            <button type="submit" id = "b1" style = " height: 50px; width: 50px; font-size: 2em; font-weight: bold; border-radius: 50%; margin-left: 7px; background-color: #4bc979; color: white; text-align: center; cursor: pointer; padding-right: 2px" onclick="readInput()"; >></button>\
+                                            <button type="submit"  id = "b2" style = " display: none; height: 50px; width: 50px; font-size: 2em; font-weight: bold; border-radius: 50%; margin-left: 7px; background-color: #4bc979; color: white; text-align: center; align-items: center; padding-bottom: 10px; "> <i class="fa fa-spinner fa-spin"></i></button>\
+                                        </div>\
+                                        <div style = " display: flex; height: 40px; margin-top:30px">\
+                                            <input type="text" name="out1" id="out1" placeholder="boom" style = " display: none ;height: 40px; width:  40%;"/>\
+                                            <input type="text" name="conf1" id="conf1" placeholder="conf\
+                                            " style = "display: none ;height: 40px; width: 30%"/>\
+
+                                        </div>\
+                                        <div style = "display:flex; ">\
+                                            <input type="text" name="out2" id="out2" placeholder="boom" style = "display: none ;height: 40px; width: 40%"/>\
+                                            <input type="text" name="conf2" id="conf2" placeholder="conf\
+                                            " style = "display: none ;height: 40px; width: 30%;"/>\
+                                        </div>\
+                                        <div style = "display:flex;">\
+                                            <input type="text" name="out3" id="out3" placeholder="boom" style = "display: none ;height: 40px; width: 40%;"/>\
+                                            <input type="text" name="conf3" id="conf3" placeholder="conf\
+                                            " style = "display: none ;height: 40px; width: 30%;"/>\
+                                        </div>\
+                                    </div>`;
+
+
+
+
+          }
+          else if (value === 'tab3') {
+            // document.getElementById("tabcontent").innerHTML = ('<div> hello 3</div>');
+            document.getElementById("tabcontent").innerHTML =
+              '<div id="3rd" style = "padding-bottom: 40px; text-align: center;">\
+                                    <div class = "form-class" style="display:flex; text-align: center;">\
+                                    <div class="upload-btn-wrapper">\
+                                        <input id = "inpfile" type="file" name="file" class="input" />\
+                                        <button class="btn1">Upload a file</button>\
+                                    </div>\
+                                    <div class="upload-btn-wrapper" style="padding-left: 5px">\
+                                        <button class = "btn1" id = "btn-1">Submit</button>\
+                                        <button class = "btn2"  id = "btn-2" style = "display:none" >\
+                                        <i style = "margin-left: -12px;margin-right: 8px;"class="fa fa-spinner fa-spin">\</i>Processing</button>\
+                                        </div>\
+                                    </div>\
+                            </div>';
+
+
+          }
+          else {
+            document.getElementById("1st").style.display = "none";
+
+          }
+        }
+      </script>
+        <select class="dropdown-content" onchange="changer(this.value)">
+          <option name="Dropdown" value="tab0" style="font-size: 15px;">Click Here for the Dropdown options </option>
+          <option name="choice1" value="tab1" style="font-size: 15px;">Enter the question to get its Syllabus Hierarchy</option>
+          <option name="choice2" value="tab2" style="font-size: 15px;">Enter the content to get its Syllabus Hierarchy</option>
+          <option name="choice3" value="tab3" style="font-size: 15px;">Upload a bulk file</option>
+        </select>
+    </div>
+    <script>
+      var el = samarth_UI.getElementById('content');
+      var content;
+
+      if (!user) {
+        content = '<h1>there is no user</h1>';
+      }
+      if (user) {
+        content = '<button type="button">Click Me!</button>';
+      }
+
+      el.insertAdjacentHTML('afterbegin', content);
+
+    </script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+      integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <div id="tabcontent">
+      <!-- 3rd option -->
+
+      <!-- 1rd option -->
+
+
+
+
+    </div>
+    <!-- 2nd option -->
+
+
+
+    </div>
+  </main>
+
+
+
+
+  </main>
+  <!-- End #main -->
+  <a href="#" class="back-to-top"><i class="bx bx-up-arrow-alt"></i></a>
+  <div id="preloader"></div>
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static',filename='assets/vendor/jquery/jquery.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/php-email-form/validate.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/waypoints/jquery.waypoints.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/counterup/counterup.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
+  <script src="{{url_for('static',filename='assets/vendor/aos/aos.js')}}"></script>
+  <!-- Template Main JS File -->
+  <script src="{{url_for('static',filename='assets/js/main.js')}}"></script>
+</body>

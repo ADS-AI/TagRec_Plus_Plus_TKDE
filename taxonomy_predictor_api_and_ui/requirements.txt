@@ -1,0 +1,8 @@
+sentence-transformers==0.2.6.1
+transformers==2.8.0
+typing
+asgiref
+fastapi
+uvicorn
+python-multipart
+pandas
